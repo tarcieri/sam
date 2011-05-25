@@ -1,0 +1,14 @@
+require 'autotest/rspec2'
+
+Autotest.add_hook :initialize do |autotest|
+  autotest.add_exception '.git'
+  autotest.clear_mappings
+  
+  # Map specs to themselves
+  autotest.add_mapping(%r<^spec/.*_spec.rb$>) { |file, _| file }
+
+  # Map source files to their respective specs
+  autotest.add_mapping(%r<lib/sam/manager/(.*).rb$>) do |_, m|
+    ["spec/manager/#{m[1]}_spec.rb"]
+  end
+end
