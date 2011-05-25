@@ -12,7 +12,16 @@ module Sam
       @store = PStore.new filename
     end
     
-    # Load raw gem specification data
+    # Find a gem in the index
+    def find(name, platform = 'ruby')
+      @store.transaction do 
+        package = @store[name]
+        package[platform] if package
+      end
+    end
+    alias_method :[], :find
+    
+    # Load Marshalled specification data (e.g. specs.4.8)
     def load_specs(data)
       old_data = data
       
@@ -26,7 +35,7 @@ module Sam
       @store.transaction do
         Marshal.load(data).each do |name, version, platform|
           platforms = @store[name] || {}
-          platforms[platform] = version.to_s
+          platforms[platform] = {:version => version.to_s}
           @store[name] = platforms
         end
       end

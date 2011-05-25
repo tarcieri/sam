@@ -23,6 +23,14 @@ describe Sam::PackageIndex do
     @index.count.should == Dir[FIXTURE_PATH + "/gems/*"].size
   end
   
+  it "locates packages" do
+    @index['dependency_free'].should be_an_instance_of(Hash)
+  end
+  
+  it "extracts package versions correctly" do
+    @index['dependency_free'][:version].should == "0.0.1"
+  end
+  
   context :import do
     before :each do
       FileUtils.rm_rf INDEX_FILE 
