@@ -10,6 +10,7 @@ Goals
 * Be *really* fast
 * Minimize the runtime component as much as possible
 * Stay mostly compatible with the existing RubyGems ecosystem
+* Be complimentary to RubyGems instead of trying to replace it
 * Combine package management and dependency resolution into a single tool
 * Depend only on the Ruby standard library
 
