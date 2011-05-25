@@ -1,0 +1,3 @@
+module DependencyFree
+  # Your code goes here...
+end
