@@ -27,9 +27,6 @@ While these are all noble attempts, none of them provide automatic dependency
 management. Sam attempts to provide similar functionality to RubyGems and
 Bundler in a single, simple-as-possible package.
 
-Sam strives to stay as simple as possible while still providing a single
-integrated tool for managing packages and resolving dependencies.
-
 Contributing
 ------------
 
