@@ -3,15 +3,15 @@ Sam: A Ruby Package Manager
 
 Sam provides unobtrusive management for Ruby gems
 
-Philosophy
-----------
+Goals
+-----
 
 * Be fast
 * Be *really* fast
 * Minimize the runtime component as much as possible
 * Stay mostly compatible with the existing RubyGems ecosystem
 * Combine package management and dependency resolution into a single tool
-* Depend only on what's in the Ruby standard library
+* Depend only on the Ruby standard library
 
 Usage
 -----
