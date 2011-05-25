@@ -1,5 +1,7 @@
 require 'uri'
 require 'net/http'
+require 'zlib'
+require 'stringio'
 
 module Sam
   class FetchError < StandardError; end # Something went wrong fetching a file
@@ -12,30 +14,24 @@ module Sam
       @filename = uri[/[\w\.]+$/]
     end
     
-    def data(tty = true)
+    # Retrieve the data 
+    def data(filter = nil)
       redirects = MAX_REDIRECTS
       response = nil
       uri = @uri
       
       body = nil
       until body
+        raise FetchError, "too many redirects" unless redirects > 0 
+        
         Net::HTTP.get_response(uri) do |response|
           case response.code.to_i
-          when 301, 302, 303, 307 # redirect
-            raise FetchError, "too many redirects" unless redirects > 0  
+          when 301, 302, 303, 307 # redirect     
             redirects -= 1
             uri = URI.parse response['Location']
           when 200
-            total_bytes = Integer(response['Content-Length'])
-            progress = Progress.new @filename, total_bytes
             body = ""
-            
-            response.read_body do |chunk|
-              body << chunk
-              progress.update chunk.size
-            end
-            
-            progress.done
+            read_body response, body, filter
           else raise FetchError, "#{response.code} #{response.message}"
           end
         end
@@ -44,10 +40,62 @@ module Sam
       body
     end
     
+    #######
+    private
+    #######
+    
+    # Fetch the body returned from a request
+    def read_body(response, output, filter_type)
+      total_bytes = Integer(response['Content-Length'])
+      progress = Progress.new @filename, total_bytes
+      filter = Filter.new filter_type if filter_type
+      
+      response.read_body do |data|
+        progress.update data.size
+        data = filter.process data if filter
+        output << data
+      end
+      
+      filter.finish if filter
+      progress.done
+      true
+    end
+    
+    # Filter for decompressing data on the fly
+    class Filter
+      def initialize(type)
+        raise ArgumentError, "invalid filter: #{type}" unless type == :gz
+        
+        @io = StringIO.new
+        @zstream = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+        @unskipped = 10 # gzip header size
+      end
+      
+      def process(input)
+        # Strip gzip headers
+        if @unskipped > 0
+          if input.size < @unskipped
+            @unskipped -= input.size
+            return ""
+          else
+            input = input.slice @unskipped, input.size - @unskipped
+            @unskipped = 0
+          end
+        end
+        
+        @zstream.inflate input
+      end
+      
+      def finish
+        @zstream.finish
+        @zstream.close
+      end
+    end
+    
     # Display download progress
     class Progress
       OUTPUT_TTY = STDERR # Print to STDERR by default
-      BAR_WIDTH  = 20 # Number of cells in the progress bar
+      BAR_WIDTH  = 16 # Number of cells in the progress bar
       BAR_CHAR   = "#"
       
       # Transfer rate moving average stuffins
@@ -115,7 +163,7 @@ module Sam
         
         status = ""
         status << "\r" if updating
-        status << "#{@filename}: %3d%%" % (percentage * 100).to_i
+        status << "#{@filename}:\t%3d%%" % (percentage * 100).to_i
         
         if updating
           full_cells = (percentage * BAR_WIDTH).ceil
