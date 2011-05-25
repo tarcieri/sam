@@ -34,8 +34,9 @@ module Sam
       # Load all specs in a single transaction
       @store.transaction do
         Marshal.load(data).each do |name, version, platform|
-          platforms = @store[name] || {}
-          platforms[platform] = {:version => version.to_s}
+          platforms = @store[name] || {} # Don't clobber existing data
+          platforms[platform] ||= {} # Ditto
+          platforms[platform][:latest_version] = version.to_s
           @store[name] = platforms
         end
       end

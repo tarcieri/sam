@@ -28,7 +28,7 @@ describe Sam::PackageIndex do
   end
   
   it "extracts package versions correctly" do
-    @index['dependency_free'][:version].should == "0.0.1"
+    @index['dependency_free'][:latest_version].should == "0.0.1"
   end
   
   context :import do
