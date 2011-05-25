@@ -53,7 +53,7 @@ module Sam
       # Transfer rate moving average stuffins
       MIN_SAMPLES = 5   # Minimum number of samples needed to display rate
       MAX_SAMPLES = 10  # Number of samples in transfer rate moving average
-      SAMPLE_RATE = 0.1 # Minimum amount of time for a transfer rate sample
+      SAMPLE_RATE = 0.05 # Minimum amount of time for a transfer rate sample
       
       def initialize(filename, total_bytes)
         @filename, @total_bytes = filename, total_bytes
@@ -93,9 +93,11 @@ module Sam
         @current_bytes = @total_bytes
         
         # Fudge moving average vars to get a real transfer rate
-        @rate_sum = @total_bytes / (Time.now - @started_at)
-        @rate_sum *= MIN_SAMPLES
-        @rate_samples = [@rate_sum] * MIN_SAMPLES
+        if @rate_samples.size >= MIN_SAMPLES
+          @rate_sum = @total_bytes / (Time.now - @started_at)
+          @rate_sum *= MIN_SAMPLES
+          @rate_samples = [@rate_sum] * MIN_SAMPLES
+        end
         
         print true, true
       end
