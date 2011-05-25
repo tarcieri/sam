@@ -163,17 +163,14 @@ module Sam
         
         status = ""
         status << "\r" if updating
-        status << "#{@filename}:\t%3d%%" % (percentage * 100).to_i
+        status << "%3d%% [" % (percentage * 100).to_i
         
-        if updating
-          full_cells = (percentage * BAR_WIDTH).ceil
-          
-          status << " ["
-          status << BAR_CHAR * full_cells
-          status << " " * (BAR_WIDTH - full_cells)
-          
-          status << "] (#{current_kb}/#{@total_kb}#{transfer_rate})"
-        end
+        full_cells = (percentage * BAR_WIDTH).ceil
+        status << BAR_CHAR * full_cells
+        status << " " * (BAR_WIDTH - full_cells)
+        
+        status << "] #{@filename}"  
+        status << " (#{current_kb}/#{@total_kb}#{transfer_rate})" if updating
         
         status << "\n" if new_line
         
