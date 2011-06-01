@@ -1,8 +1,9 @@
 require 'fileutils'
+require 'uri'
 
 module Sam
   module Indexes
-    DEFAULT_SOURCES = ['rubygems.org']
+    DEFAULT_SOURCES = ['http://rubygems.org']
     
     # Make all methods callable via self
     module_function
@@ -24,9 +25,21 @@ module Sam
       @@index_files = {}
       
       sources.each do |source|
-        file = "#{path}/#{source}.index"
+        uri = URI.parse(source)
+        file = "#{path}/#{uri.host}.index"
         @@index_files[source] = file
+        
+        update source unless File.exist? file
       end
+      
+      true
+    end
+    
+    # Update a given source
+    def update(source)
+      Tty.ohai "Updating package index for #{source}"
+      specs = Fetcher.new("#{source}/specs.4.8.gz")
+      PackageIndex.new(@@index_files[source]).load_specs specs.data
     end
   end
 end

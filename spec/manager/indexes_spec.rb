@@ -17,7 +17,7 @@ describe Sam::Indexes do
     end
     
     it "knows the sources" do
-      Sam::Indexes.sources.should == ["rubygems.org"]
+      Sam::Indexes.sources.should == ["http://rubygems.org"]
     end
     
     it "sets up the environment" do

@@ -13,10 +13,9 @@ module Sam
     end
     
     # Find a gem in the index
-    def find(name, platform = 'ruby')
+    def find(name)
       @store.transaction do 
-        package = @store[name]
-        package[platform] if package
+        @store[name]
       end
     end
     alias_method :[], :find
@@ -34,10 +33,12 @@ module Sam
       # Load all specs in a single transaction
       @store.transaction do
         Marshal.load(data).each do |name, version, platform|
-          platforms = @store[name] || {} # Don't clobber existing data
-          platforms[platform] ||= {} # Ditto
-          platforms[platform][:latest_version] = version.to_s
-          @store[name] = platforms
+          version = version.to_s
+          
+          versions = @store[name] || {} # Don't clobber existing data
+          versions[version] ||= {} # Ditto
+          versions[version][platform] ||= nil # specific data unfetched
+          @store[name] = versions
         end
       end
     end

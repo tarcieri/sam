@@ -28,7 +28,7 @@ describe Sam::PackageIndex do
   end
   
   it "extracts package versions correctly" do
-    @index['dependency_free'][:latest_version].should == "0.0.1"
+    @index['dependency_free']['0.0.1'].should be_has_key('ruby')
   end
   
   context :import do
