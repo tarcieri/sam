@@ -14,10 +14,19 @@ Goals
 * Combine package management and dependency resolution into a single tool
 * Depend only on the Ruby standard library
 
+Installation
+------------
+
+Sam installation presently requires git. Install Sam with the following:
+
+    curl -s https://github.com/tarcieri/sam/raw/master/setup.rb | ruby
+
+This script can also be used to update Sam to the latest version.
+
 Usage
 -----
 
-A usage section sure is important! I hope one gets written soon.
+Sam isn't quite ready to use yet
 
 Why?
 ----
