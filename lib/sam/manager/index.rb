@@ -40,26 +40,62 @@ module Sam
     def initialize(path)
       @path = path
       
-      File.open(path) do |file|
+      if File.exist? path
+        process_header
+      else
+        @keys = {}
+      end
+    end
+    
+    def [](key)
+      File.open(@path) do |file|
+        read_entry file, key
+      end
+    end
+    
+    def keys
+      @keys.keys
+    end
+    
+    def each
+      File.open(@path) do |file|
+        keys.each do |key, _|
+          yield key, read_entry(file, key)
+        end
+      end
+    end
+    
+    def to_hash
+      hash = {}
+      each { |key, value| hash[key] = value }
+      hash
+    end
+    
+    #######
+    private
+    #######
+    
+    # Read the file header and cache the keys
+    def process_header
+      File.open(@path) do |file|
         unless file.read(4) == MAGIC_DATA
           raise ArgumentError, "couldn't find Sam Index header"
         end
-        
+      
         keys_size, _ = file.read(4).unpack("N")
         @keys = Marshal.load file.read(keys_size)
         @offset = 8 + keys_size
       end
     end
     
-    def [](key)
+    # Read an entry from the given file
+    def read_entry(file, key)
       index = @keys[key]
       return unless index
       
-      File.open(@path) do |file|
-        file.seek @offset + index
-        length, _ = file.read(4).unpack("N")
-        Marshal.load file.read(length)
-      end
+      file.seek @offset + index
+      length, _ = file.read(4).unpack("N")
+      Marshal.load file.read(length)
     end
   end
 end
