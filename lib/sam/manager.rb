@@ -1,3 +1,4 @@
+require 'sam'
 require 'sam/manager/tty'
 require 'sam/manager/gem_stubs'
 require 'sam/manager/fetcher'

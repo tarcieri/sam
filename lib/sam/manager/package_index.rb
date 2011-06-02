@@ -28,7 +28,7 @@ module Sam
         gz.close
       end
       
-      packages = @index.to_hash
+      packages = {}
       
       Marshal.load(data).each do |name, version, platform|
         version = version.to_s

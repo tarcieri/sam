@@ -4,7 +4,4 @@
 devel_path = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH << devel_path if File.exists? File.expand_path('sam.rb', devel_path)
 
-require 'sam'
-require 'sam/manager'
-
-Sam::Tty.ohai "Sam-I-Am!"
+require 'sam/cli'

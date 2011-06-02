@@ -10,7 +10,7 @@ module Sam
     
     # Path to the index files
     def path
-      @@path ||= "~/.sam/indexes"
+      @@path ||= File.join(Sam.path, 'indexes')
     end
     def path=(new_path)
       @@path = new_path

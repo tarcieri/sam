@@ -1,8 +1,7 @@
 module Sam
   # TTY functions for controlling colors
   module Tty
-    # Add all functions to self
-    module_function
+    extend self
     
     def blue; bold 34; end
     def white; bold 39; end
