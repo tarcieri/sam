@@ -62,14 +62,19 @@ module Sam
     def each
       return if cached_keys.empty?
       
+      # Order keys by their location on disk
+      key_pairs = cached_keys.to_a.sort_by { |key, offset| offset }
+      
       File.open(@path) do |file|
-        keys.each do |key, _|
-          yield key, read_entry(file, key)
+        key_pairs.each do |key, index|
+          yield key, read_from_index(file, index)
         end
       end
     end
     
     def to_hash
+      puts "omg to hash!"
+      
       hash = {}
       each { |key, value| hash[key] = value }
       hash
@@ -113,7 +118,10 @@ module Sam
     def read_entry(file, key)
       index = cached_keys[key]
       return unless index
-      
+      read_from_index file, index
+    end
+    
+    def read_from_index(file, index)
       file.seek @cached_offset + index
       length, _ = file.read(4).unpack("N")
       Marshal.load file.read(length)
