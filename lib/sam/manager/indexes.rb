@@ -38,8 +38,15 @@ module Sam
     # Update a given source
     def update(source)
       Tty.ohai "Updating package index for #{source}"
-      specs = Fetcher.new("#{source}/specs.4.8.gz")
-      PackageIndex.new(@@index_files[source]).load_specs specs.data
+      specs = Fetcher.new("#{source}/specs.4.8.gz").data
+      
+      Tty.print "Rebuilding index... "
+      
+      started_at = Time.now
+      PackageIndex.new(@@index_files[source]).load_specs specs
+      indexing_time = Time.now - started_at
+      
+      Tty.puts "done. (#{"%.2f" % indexing_time} secs)"
     end
   end
 end

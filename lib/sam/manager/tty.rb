@@ -17,5 +17,17 @@ module Sam
     def ohai(something, tty = STDOUT)
       tty.puts "#{blue}*** #{white}#{something}#{Tty.reset}"
     end
+    
+    def yeow(something, tty = STDOUT)
+      tty.puts "#{red}#{something}#{reset}"
+    end
+    
+    def print(something, tty = STDOUT)
+      tty.print something
+    end
+    
+    def puts(something, tty = STDOUT)
+      tty.puts something
+    end
   end
 end
