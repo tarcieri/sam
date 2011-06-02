@@ -3,7 +3,7 @@ require 'tempfile'
 
 describe Sam::Index do
   before do
-    @tempfile = Tempfile.new "sam_create_index_spec"
+    @tempfile = Tempfile.new "sam_index_spec"
     @path = @tempfile.path
     
     Sam::Index.create_file(@path, :foo => 1, :bar => 2, :baz => 3)

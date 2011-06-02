@@ -4,7 +4,7 @@ require 'fileutils'
 
 describe Sam::Indexes do
   before do
-    @index_path = Dir.mktmpdir('sam_index_test')
+    @index_path = Dir.mktmpdir('sam_indexes_spec')
   end
   after do
     FileUtils.rm_rf @index_path
