@@ -73,8 +73,6 @@ module Sam
     end
     
     def to_hash
-      puts "omg to hash!"
-      
       hash = {}
       each { |key, value| hash[key] = value }
       hash
