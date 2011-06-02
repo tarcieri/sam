@@ -57,7 +57,13 @@ module Sam
       @keys.keys
     end
     
+    def size
+      @keys.size
+    end
+    
     def each
+      return if @keys.empty?
+      
       File.open(@path) do |file|
         keys.each do |key, _|
           yield key, read_entry(file, key)

@@ -20,6 +20,10 @@ describe Sam::Index do
     @index[:baz].should == 3
   end
   
+  it "knows its size" do
+    @index.size.should == 3
+  end
+  
   it "enumerates keys" do
     keys = @index.keys
     
