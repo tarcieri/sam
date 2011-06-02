@@ -1,4 +1,3 @@
-require 'pstore'
 require 'zlib'
 require 'stringio'
 
@@ -8,15 +7,14 @@ module Sam
     GZIP_MAGIC = [31, 139] # Magic numbers for gzip files
     
     # Create a new package index at the given path
-    def initialize(filename)
-      @store = PStore.new filename
+    def initialize(path)
+      @path  = path
+      @index = Index.new path
     end
     
     # Find a gem in the index
     def find(name)
-      @store.transaction do 
-        @store[name]
-      end
+      @index[name]
     end
     alias_method :[], :find
     
@@ -29,28 +27,29 @@ module Sam
         data = gz.read
         gz.close
       end
-            
-      # Load all specs in a single transaction
-      @store.transaction do
-        Marshal.load(data).each do |name, version, platform|
-          version = version.to_s
-          
-          versions = @store[name] || {} # Don't clobber existing data
-          versions[version] ||= {} # Ditto
-          versions[version][platform] ||= nil # specific data unfetched
-          @store[name] = versions
-        end
+      
+      packages = @index.to_hash
+      
+      Marshal.load(data).each do |name, version, platform|
+        version = version.to_s
+        
+        versions = packages[name] || {} # Don't clobber existing data
+        versions[version] ||= {} # Ditto
+        versions[version][platform] ||= nil # specific data unfetched
+        packages[name] = versions
       end
+      
+      Index.create_file @path, packages
     end
     
     # List all gems currently in the index
     def list
-      @store.transaction { @store.roots }
+      @index.keys
     end
     
     # Count of how many gems are in the index
     def count
-      list.size
+      @index.size
     end
   end
 end
