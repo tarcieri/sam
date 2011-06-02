@@ -1,5 +1,3 @@
-
-
 module Sam
   class Index
     MAGIC_DATA   = "SamI" # Identify Sam Index files
