@@ -43,7 +43,7 @@ module Sam
       if File.exist? path
         process_header
       else
-        @keys = {}
+        @cached_keys = {}
       end
     end
     
@@ -54,15 +54,15 @@ module Sam
     end
     
     def keys
-      @keys.keys
+      cached_keys.keys
     end
     
     def size
-      @keys.size
+      cached_keys.size
     end
     
     def each
-      return if @keys.empty?
+      return if cached_keys.empty?
       
       File.open(@path) do |file|
         keys.each do |key, _|
@@ -77,29 +77,46 @@ module Sam
       hash
     end
     
+    def updated_at
+      File.stat(@path).mtime
+    rescue Errno::ENOENT
+    end
+    
     #######
     private
     #######
     
+    def cached_keys
+      return @cached_keys if @cached_at and updated_at != @cached_at
+      
+      return Hash.new unless File.exist? @path
+      process_header
+      @cached_keys
+    end
+    
     # Read the file header and cache the keys
     def process_header
+      @cached_at = updated_at
+      
       File.open(@path) do |file|
         unless file.read(4) == MAGIC_DATA
           raise ArgumentError, "couldn't find Sam Index header"
         end
       
         keys_size, _ = file.read(4).unpack("N")
-        @keys = Marshal.load file.read(keys_size)
-        @offset = 8 + keys_size
+        @cached_keys = Marshal.load file.read(keys_size)
+        @cached_offset = 8 + keys_size
       end
+      
+      true
     end
     
     # Read an entry from the given file
     def read_entry(file, key)
-      index = @keys[key]
+      index = cached_keys[key]
       return unless index
       
-      file.seek @offset + index
+      file.seek @cached_offset + index
       length, _ = file.read(4).unpack("N")
       Marshal.load file.read(length)
     end
