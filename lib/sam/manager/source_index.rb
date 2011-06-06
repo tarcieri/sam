@@ -3,7 +3,7 @@ require 'stringio'
 
 module Sam
   # Maintains an index of packages available on a given gem server
-  class PackageIndex
+  class SourceIndex
     GZIP_MAGIC = [31, 139] # Magic numbers for gzip files
     
     # Create a new package index at the given path

@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'tmpdir'
 require 'fileutils'
 
-describe Sam::Indexes do
+describe Sam::SourceIndexes do
   before do
     @index_path = Dir.mktmpdir('sam_indexes_spec')
   end
@@ -12,19 +12,19 @@ describe Sam::Indexes do
   
   context :environment do
     it "configures path to indexes" do
-      Sam::Indexes.path = @index_path
-      Sam::Indexes.path.should == @index_path
+      Sam::SourceIndexes.path = @index_path
+      Sam::SourceIndexes.path.should == @index_path
     end
     
     it "knows the sources" do
-      Sam::Indexes.sources.should == ["http://rubygems.org"]
+      Sam::SourceIndexes.sources.should == ["http://rubygems.org"]
     end
     
     it "sets up the environment" do
-      Sam::Indexes.path = @index_path
+      Sam::SourceIndexes.path = @index_path
       
       proc do
-        Sam::Indexes.setup
+        Sam::SourceIndexes.setup
       end.should_not raise_exception
     end
   end

@@ -4,10 +4,10 @@ require 'fileutils'
 INDEX_FILE    = '/tmp/package.index'
 EXAMPLE_SPECS = FIXTURE_PATH + "/source/latest_specs.4.8"
 
-describe Sam::PackageIndex do
+describe Sam::SourceIndex do
   before do
     FileUtils.rm_rf INDEX_FILE 
-    @index = Sam::PackageIndex.new INDEX_FILE
+    @index = Sam::SourceIndex.new INDEX_FILE
     @index.load_specs File.read(EXAMPLE_SPECS)
   end
   
@@ -34,7 +34,7 @@ describe Sam::PackageIndex do
   context :import do
     before :each do
       FileUtils.rm_rf INDEX_FILE 
-      @index = Sam::PackageIndex.new INDEX_FILE
+      @index = Sam::SourceIndex.new INDEX_FILE
     end
     
     it "imports latest_specs.4.8 files" do

@@ -2,7 +2,7 @@ require 'fileutils'
 require 'uri'
 
 module Sam
-  module Indexes
+  module SourceIndexes
     DEFAULT_SOURCES = ['http://rubygems.org']
     
     # Make all methods callable via self
@@ -43,7 +43,7 @@ module Sam
       Tty.print "Rebuilding index... "
       
       started_at = Time.now
-      PackageIndex.new(@@index_files[source]).load_specs specs
+      SourceIndex.new(@@index_files[source]).load_specs specs
       indexing_time = Time.now - started_at
       
       Tty.puts "done. (#{"%.2f" % indexing_time} secs)"
