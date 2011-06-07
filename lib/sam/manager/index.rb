@@ -85,6 +85,10 @@ module Sam
     rescue Errno::ENOENT
     end
     
+    def inspect
+      "#<#{self.class}:#{self.object_id} @path=#{@path.inspect} @size=#{size}>"
+    end
+    
     #######
     private
     #######
