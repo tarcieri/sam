@@ -28,7 +28,7 @@ describe Sam::SourceIndex do
   end
   
   it "extracts package versions correctly" do
-    @index['dependency_free']['0.0.1'].should be_has_key('ruby')
+    @index['dependency_free']['0.0.1'].should include('ruby')
   end
   
   context :import do

@@ -34,8 +34,9 @@ module Sam
         version = version.to_s
       
         versions = packages[name] || {} # Don't clobber existing data
-        versions[version] ||= {} # Ditto
-        versions[version][platform] ||= nil # specific data unfetched
+        versions[version] ||= [] # Ditto
+        versions[version] << platform
+        
         packages[name] = versions
       end
     
