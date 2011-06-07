@@ -6,21 +6,34 @@ module Sam
       @source_data = nil # loads lazily
     end
     
-    # Raw hash from the source index
-    def source_data
-      @source_data ||= SourceIndexes[@name]
+    # Methods which operate on the source index
+    module SourceMethods
+      # Raw hash from the source index
+      def source_data
+        @source_data ||= SourceIndexes[@name]
+      end
+      
+      # Obtain the latest version
+      def latest_version
+        p source_data
+      end
     end
+    include SourceMethods
     
-    # Retrieve the index data
-    def index_data
-      raise "no index specified for this package" unless @index
-      @index[@name]
-    end
+    # Methods which operate on locally installed packages
+    module LocalMethods
+      # Retrieve the index data
+      def index_data
+        raise "no index specified for this package" unless @index
+        @index[@name]
+      end
     
-    # Is the package installed?
-    def installed?
-      data = index_data
-      data && index_data[:installed]
+      # Is the package installed?
+      def installed?
+        data = index_data
+        data && index_data[:installed]
+      end
     end
+    include LocalMethods
   end
 end
