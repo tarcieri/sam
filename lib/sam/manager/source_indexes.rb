@@ -39,10 +39,15 @@ module Sam
     # Retrieve a package from all available indexes
     def find(package_name)
       sources.each do |source|
-        index = index_cache(source)        
+        index = index_cache(source)
         package = index[package_name]
         
-        return package if package
+        if package
+          return {
+            :source   => source,
+            :versions => package
+          }
+        end
       end
       
       nil

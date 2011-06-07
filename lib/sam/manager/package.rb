@@ -22,7 +22,7 @@ module Sam
       # Obtain the latest version
       def latest_version(target_platform = DEFAULT_PLATFORM)
         valid_versions = []
-        source_data.each do |version, platforms|
+        source_data[:versions].each do |version, platforms|
           platforms.each do |platform|
             if platform == target_platform or platform == DEFAULT_PLATFORM
               valid_versions << version
