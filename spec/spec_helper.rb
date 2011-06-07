@@ -12,5 +12,4 @@ module Kernel
   alias_method :require, :gem_original_require
 end
 
-require 'sam'
 require 'sam/manager'
