@@ -16,12 +16,31 @@ module Sam
     
     # Retrieve the data 
     def data(filter = nil)
+      body = ""
+      download body, filter
+      body
+    end
+    
+    # Save the data to disk
+    def save_to(path)
+      File.open(path, 'w', 0644) do |file|
+        download file
+      end
+      true
+    end
+    
+    #######
+    private
+    #######
+    
+    # Download the file to the given handle
+    def download(output, filter = nil)
       redirects = MAX_REDIRECTS
       response = nil
       uri = @uri
       
-      body = nil
-      until body
+      success = false
+      until success
         raise FetchError, "too many redirects" unless redirects > 0 
         
         Net::HTTP.get_response(uri) do |response|
@@ -30,19 +49,15 @@ module Sam
             redirects -= 1
             uri = URI.parse response['Location']
           when 200
-            body = ""
-            read_body response, body, filter
+            success = true
+            read_body response, output, filter
           else raise FetchError, "#{response.code} #{response.message}"
           end
         end
       end
           
-      body
+      output
     end
-    
-    #######
-    private
-    #######
     
     # Fetch the body returned from a request
     def read_body(response, output, filter_type)
