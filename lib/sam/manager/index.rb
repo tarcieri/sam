@@ -46,6 +46,8 @@ module Sam
     end
     
     def [](key)
+      return unless cached_keys[key]
+      
       File.open(@path) do |file|
         read_entry file, key
       end
