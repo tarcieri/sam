@@ -14,9 +14,13 @@ module Sam
       @cache[name] ||= Package.new(@name, @index)
     end
     
-    def install(package)
+    def install(package_name, version = nil, platform = 'ruby')
+      package = self[package_name]
+      
       cache_path = File.join(@path, 'cache')
       mkdir_p cache_path
+      
+      version ||= package.latest_version
     end
   end
 end

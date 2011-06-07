@@ -1,9 +1,13 @@
 module Sam
+  class InvalidPackageError < StandardError; end # Package isn't in the index
+  
   # Packages represent individual gems
   class Package
     def initialize(name, index = nil)
       @name, @index = name, index
       @source_data = nil # loads lazily
+      
+      index_data # confirm package is in the index
     end
     
     # Methods which operate on the source index
