@@ -34,6 +34,11 @@ module Sam
         # FIXME: this sort is totally horked
         valid_versions.sort.last
       end
+      
+      # Obtain the URL to a package
+      def url(version = latest_version)
+        "#{source_data[:source]}/gems/#{@name}-#{version}.gem"
+      end
     end
     include SourceMethods
     

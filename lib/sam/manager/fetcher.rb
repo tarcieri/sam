@@ -11,7 +11,7 @@ module Sam
     
     def initialize(uri)
       @uri = URI.parse uri
-      @filename = uri[/[\w\.]+$/]
+      @filename = uri[/[\w\-\.]+$/]
     end
     
     # Retrieve the data 

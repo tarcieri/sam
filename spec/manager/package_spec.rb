@@ -7,6 +7,9 @@ describe Sam::PackageManager do
     
     # TESTME: Sam::Package::SourceMethods#latest_version
     it "knows the latest version of a package"
+    
+    # TESTME: Sam:Package::SourceMethods#url
+    it "knows the url of a package"
   end
   
   context "local operations" do  

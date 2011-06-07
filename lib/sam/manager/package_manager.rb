@@ -21,7 +21,13 @@ module Sam
       mkdir_p cache_path
       
       version ||= package.latest_version
-      p version
+      fetcher = Fetcher.new package.url(version)
+      
+      filename = "#{package_name}-#{version}.gem"
+      gem_path = File.join(cache_path, filename)
+      fetcher.save_to gem_path
+      
+      #package.install gem_path
     end
   end
 end
