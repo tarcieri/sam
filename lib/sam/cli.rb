@@ -33,7 +33,7 @@ module Sam
     end
     
     command :install, "Install the given package" do
-      Sam::Indexes.setup
+      Sam::SourceIndexes.setup
       
       package_manager = Sam::PackageManager.new Sam.package_path
       package_manager.install ARGV[1]
