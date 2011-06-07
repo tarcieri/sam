@@ -11,7 +11,7 @@ module Sam
     end
     
     def [](name)
-      @cache[name] ||= Package.new(@name, @index)
+      @cache[name] ||= Package.new(name, @index)
     end
     
     def install(package_name, version = nil, platform = 'ruby')
@@ -21,6 +21,7 @@ module Sam
       mkdir_p cache_path
       
       version ||= package.latest_version
+      p version
     end
   end
 end

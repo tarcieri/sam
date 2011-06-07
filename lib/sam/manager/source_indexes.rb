@@ -41,6 +41,7 @@ module Sam
       sources.each do |source|
         index = index_cache(source)        
         package = index[package_name]
+        
         return package if package
       end
       

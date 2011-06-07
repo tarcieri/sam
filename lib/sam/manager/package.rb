@@ -3,6 +3,8 @@ module Sam
   
   # Packages represent individual gems
   class Package
+    DEFAULT_PLATFORM = 'ruby' # default gem platform to use
+    
     def initialize(name, index = nil)
       @name, @index = name, index
       @source_data = nil # loads lazily
@@ -18,8 +20,19 @@ module Sam
       end
       
       # Obtain the latest version
-      def latest_version
-        p source_data
+      def latest_version(target_platform = DEFAULT_PLATFORM)
+        valid_versions = []
+        source_data.each do |version, platforms|
+          platforms.each do |platform|
+            if platform == target_platform or platform == DEFAULT_PLATFORM
+              valid_versions << version
+              break
+            end
+          end
+        end
+        
+        # FIXME: this sort is totally horked
+        valid_versions.sort.last
       end
     end
     include SourceMethods
